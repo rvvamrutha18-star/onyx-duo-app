@@ -1,96 +1,68 @@
-# ONYX DUO - Aviation Supply-Chain Traceability (Solana Devnet prototype)
+<p align="center">
+  <a href="https://nextjs.org">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png">
+      <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_light_background.png" height="128">
+    </picture>
+    <h1 align="center">Next.js</h1>
+  </a>
+</p>
 
-Next.js + Tailwind frontend, Express + Prisma + SQLite backend, Anchor registry program on Devnet.
-Prototype only - not for real airworthiness decisions.
+<p align="center">
+  <a aria-label="Vercel logo" href="https://vercel.com">
+    <img src="https://img.shields.io/badge/MADE%20BY%20Vercel-000000.svg?style=for-the-badge&logo=Vercel&labelColor=000">
+  </a>
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/next">
+    <img alt="" src="https://img.shields.io/npm/v/next.svg?style=for-the-badge&labelColor=000000">
+  </a>
+  <a aria-label="License" href="https://github.com/vercel/next.js/blob/canary/license.md">
+    <img alt="" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000">
+  </a>
+  <a aria-label="Join the community on GitHub" href="https://github.com/vercel/next.js/discussions">
+    <img alt="" src="https://img.shields.io/badge/Join%20the%20community-blueviolet.svg?style=for-the-badge&logo=Next.js&labelColor=000000&logoWidth=20">
+  </a>
+</p>
 
-## What is real and what is not
+## Getting Started
 
-| Thing | Where it lives | Label in the UI |
-|---|---|---|
-| Component identity, status, maintenance records signed in your wallet | Solana Devnet account (PDA) | "On-chain confirmed" + Explorer link, shown only after the backend re-checks the signature on Devnet |
-| Everything saved without a wallet transaction, and all `DEMO-*` seed rows | SQLite file `backend/prisma/dev.db` | "Off-chain prototype record" |
-| Search, dashboard, activity feed | SQLite | - |
+Used by some of the world's largest companies, Next.js enables you to create full-stack web applications by extending the latest React features, and integrating powerful Rust-based JavaScript tooling for the fastest builds.
 
-The deployed program is still the `hello_anchor` starter until you do STEP 1. Until then, on-chain
-actions fail with a clear message and nothing is ever labelled on-chain.
+- Visit our [Learn Next.js](https://nextjs.org/learn) course to get started with Next.js.
+- Visit the [Next.js Showcase](https://nextjs.org/showcase) to see more sites built with Next.js.
 
-## STEP 1 - upgrade the program (Solana Playground, same program ID)
+## Documentation
 
-1. Open your project in https://beta.solpg.io (the one that deployed `FMZsoKzQoF7JtZmFd9pzBKkB8xY1aRi11689rXc8bFbQ`).
-   Connect the same Playground wallet.
-2. In the Playground terminal run: `solana program show FMZsoKzQoF7JtZmFd9pzBKkB8xY1aRi11689rXc8bFbQ`
-   Check that **Authority** is your deployer wallet. If it says `none`, the program is immutable and cannot be upgraded:
-   go to option B below.
-3. Replace everything in `src/lib.rs` with the file `anchor/lib.rs` from this folder.
-4. Make sure the wallet has Devnet SOL (`solana airdrop 2`, or https://faucet.solana.com).
-5. Click Build, then Deploy.
-   - If Deploy says the new program is too big for the existing account, try
-     `solana program extend FMZsoKzQoF7JtZmFd9pzBKkB8xY1aRi11689rXc8bFbQ 200000` in the terminal and deploy again.
-   - Option B (always works): in Playground create a new program keypair, deploy under the new ID, then put the new ID in
-     `backend/.env` (`PROGRAM_ID=`) and `frontend/.env.local` (`NEXT_PUBLIC_PROGRAM_ID=`). Also change `declare_id!` if Playground did not.
-6. Verify: `solana program show <ID>` shows a new "Last Deployed Slot". The real proof is STEP 4 below.
+Visit [https://nextjs.org/docs](https://nextjs.org/docs) to view the full documentation.
 
-Note: the Explorer link in your notes had a stray space ("F MZso..."). Use the ID without spaces.
+## Community
 
-## STEP 2 - backend (PowerShell, terminal 1)
+The Next.js community can be found on [GitHub Discussions](https://github.com/vercel/next.js/discussions) where you can ask questions, voice ideas, and share your projects with other people.
 
-```powershell
-cd <path>\onyx-duo-app\backend
-npm install
-Copy-Item .env.example .env
-npx prisma db push
-npm run seed
-npm run dev
-```
-Check http://localhost:4000/api/health returns `{"ok":true,...}`. No database server and no secrets needed.
-If PowerShell blocks npm: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then reopen PowerShell.
+To chat with other community members you can join the Next.js [Discord](https://nextjs.org/discord) server.
 
-## STEP 3 - frontend (PowerShell, terminal 2)
+Do note that our [Code of Conduct](https://github.com/vercel/next.js/blob/canary/CODE_OF_CONDUCT.md) applies to all Next.js community channels. Users are **highly encouraged** to read and adhere to them to avoid repercussions.
 
-```powershell
-cd <path>\onyx-duo-app\frontend
-npm install
-Copy-Item .env.example .env.local
-npm run dev
-```
-Open http://localhost:3000 (not 127.0.0.1).
+## Contributing
 
-## STEP 4 - verify the real on-chain flow
+Contributions to Next.js are welcome and highly appreciated. However, before you jump right into it, we would like you to review our [Contribution Guidelines](/contributing.md) to make sure you have a smooth experience contributing to Next.js.
 
-1. Install Phantom or Solflare, switch it to **Devnet**, get Devnet SOL from https://faucet.solana.com.
-2. Click Connect wallet. Register a component with the on-chain box ticked. Approve in your wallet.
-3. You should see "On-chain confirmed" and an Explorer link. Open it and confirm the transaction calls program `FMZs...`.
-4. Open the component: the "Live on-chain state" box reads the account straight from Devnet.
-5. Record maintenance and change status the same way (status is restricted to the wallet that registered the component).
+### Good First Issues:
 
-## Judge demo script (3 minutes)
+We have a list of **[good first issues](https://github.com/vercel/next.js/labels/good%20first%20issue)** that contain bugs that have a relatively limited scope. This is a great place for newcomers and beginners alike to get started, gain experience, and get familiar with our contribution process.
 
-1. "Dashboard: counts and activity come from our API and SQLite. Rows named DEMO-* are mock data, labelled off-chain."
-2. "I connect my Devnet wallet and register component ENG-0001. My wallet signs; no private key is in the app."
-3. "The badge says On-chain confirmed only because the backend re-fetched the transaction from Devnet and checked that it succeeded, called our program and touched this component's account."
-4. Click the Explorer link. "Real signature, real program."
-5. "Live on-chain state reads the account back from Solana, independent of our database."
-6. Record a FAIL maintenance result, then set the component to Quarantined. "Each is a signed on-chain instruction with an on-chain timestamp; history is indexed PDAs."
-7. Register one component without the wallet box: "This one is labelled Off-chain prototype record - we never fake the chain."
-8. Honest limits: any wallet may record maintenance (no technician allowlist yet); the database and chain are separate writes; Devnet only.
+## Authors
 
-## Layout
+A list of the original co-authors of Next.js that helped bring this amazing framework to life!
 
-```
-anchor/lib.rs                 Anchor program: register_component, record_maintenance, update_status
-backend/                      Express + Zod + Prisma (SQLite); verifies signatures against Devnet RPC
-frontend/src/lib/onchain.ts   Hand-written client matching lib.rs (no IDL needed)
-```
-If you change the Rust code, update `onchain.ts` to match (instruction args, account order, discriminators).
+- Tim Neutkens ([@timneutkens](https://twitter.com/timneutkens))
+- Naoyuki Kanezawa ([@nkzawa](https://twitter.com/nkzawa))
+- Guillermo Rauch ([@rauchg](https://twitter.com/rauchg))
+- Arunoda Susiripala ([@arunoda](https://twitter.com/arunoda))
+- Tony Kovanen ([@tonykovanen](https://twitter.com/tonykovanen))
+- Dan Zajdband ([@impronunciable](https://twitter.com/impronunciable))
 
-## API
+---
 
-`GET /api/health` · `GET /api/stats` · `GET /api/activity` · `GET /api/components?q=&status=&manufacturer=` ·
-`GET /api/components/check?id=&serial=` · `POST /api/components` · `GET /api/components/:id` ·
-`POST /api/components/:id/maintenance` · `PATCH /api/components/:id/status`
-Write endpoints accept an optional `onchainSignature`; it is stored as on-chain proof only if Devnet confirms it.
+## Security
 
-## Not tested yet (be honest in your demo)
-
-Nothing here has been run on a real machine yet: `npm install`, Prisma, `next build`, the Anchor build/upgrade and every
-Devnet transaction still need to be run by you. Paste any error and it can be fixed quickly.
+If you believe you have found a security vulnerability in Next.js, we encourage you to **_responsibly disclose this and NOT open a public issue_**. We will investigate all legitimate reports. Email `security@vercel.com` to disclose any security vulnerabilities. Alternatively, you can visit this [link](https://vercel.com/security) to know more about Vercel's security and report any security vulnerabilities.
