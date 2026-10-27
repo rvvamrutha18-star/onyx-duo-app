@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Component {
+  id               String        @id // component ID, also the on-chain PDA seed (max 32 bytes)
+  manufacturer     String
+  partNumber       String
+  serialNumber     String        @unique
+  aircraftModel    String
+  status           String        @default("REGISTERED") // REGISTERED | IN_SERVICE | UNDER_MAINTENANCE | QUARANTINED | RETIRED
+  onchainSignature String?
+  onchainVerified  Boolean       @default(false) // true ONLY after the backend confirmed the tx on Devnet
+  onchainAddress   String?       // component PDA, set only when verified
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  maintenance      Maintenance[]
+}
+
+model Maintenance {
+  id               Int       @id @default(autoincrement())
+  componentId      String
+  component        Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  technicianWallet String
+  inspectionResult String    // PASS | FAIL | ACTION_REQUIRED
+  notes            String
+  timestamp        DateTime
+  onchainSignature String?
+  onchainVerified  Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+
+  @@index([componentId])
+}
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  componentId String?
+  kind        String   // REGISTERED | MAINTENANCE | STATUS
+  message     String
+  signature   String?
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
